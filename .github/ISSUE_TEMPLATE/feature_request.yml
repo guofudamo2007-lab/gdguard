@@ -1,0 +1,33 @@
+name: Feature request
+description: Suggest a GDGuard check or CLI improvement
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What Godot repository problem should GDGuard catch or explain better?
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed solution
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+    validations:
+      required: false
+  - type: dropdown
+    id: requires_godot
+    attributes:
+      label: Does this require a Godot executable?
+      options:
+        - "No, it can be a static check"
+        - "Yes, it should SKIPPED when Godot is missing"
+        - "Not sure"
+    validations:
+      required: true

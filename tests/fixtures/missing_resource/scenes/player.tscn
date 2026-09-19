@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Texture2D" path="res://assets/missing.png" id="1_tex"]
+[ext_resource type="Script" path="res://scripts/missing.gd" id="2_script"]
+
+[node name="Player" type="Node2D"]
+script = ExtResource("2_script")
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_tex")

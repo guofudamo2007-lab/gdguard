@@ -1,0 +1,51 @@
+name: Bug report
+description: Report incorrect GDGuard behavior
+labels: ["bug"]
+body:
+  - type: input
+    id: gdguard_version
+    attributes:
+      label: GDGuard version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+  - type: input
+    id: godot_version
+    attributes:
+      label: Godot version
+      placeholder: "4.3, unknown, or not installed"
+    validations:
+      required: true
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: "Windows 11, Ubuntu 24.04, macOS 15"
+    validations:
+      required: true
+  - type: input
+    id: command
+    attributes:
+      label: Command
+      placeholder: "gdguard check ."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: A tiny Godot project or exact files needed to reproduce the issue.
+    validations:
+      required: true
