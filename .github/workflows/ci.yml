@@ -4,44 +4,60 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest]
+        python-version: ["3.11", "3.14"]
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-
-      - name: Install GDGuard
-        run: |
-          python -m pip install --upgrade pip
-          pip install -e ".[dev]"
-
+      - name: Install development dependencies
+        run: python -m pip install -e ".[dev]"
       - name: Ruff
-        run: ruff check .
-
-      - name: Tests
-        run: pytest
-
-      - name: CLI smoke
+        run: python -m ruff check .
+      - name: Formatting
+        run: python -m ruff format --check .
+      - name: Pure Python tests (no engine execution)
+        run: python -m pytest -m "not godot"
+      - name: Reproducible static demo
+        run: python scripts/demo.py
+      - name: Build wheel and sdist
+        run: python -m build
+      - name: Clean artifact installations and CLI
+        run: python scripts/verify_distribution.py
+      - name: Prepare Action fixture with special characters
+        id: fixture
+        shell: python
         run: |
-          gdguard --help
-          gdguard --version
-          gdguard check tests/fixtures/valid_project
-          gdguard check tests/fixtures/valid_project --format json
-
-      - name: Broken fixture should fail
-        run: |
-          set +e
-          gdguard check tests/fixtures/missing_resource
-          status=$?
-          set -e
-          test "$status" -eq 1
+          import os, pathlib, shutil
+          path = pathlib.Path(os.environ["RUNNER_TEMP"]) / "gdguard game $[demo];"
+          shutil.copytree("tests/fixtures/valid_project", path)
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
+              print(f"path={path}", file=output)
+      - name: Composite Action success
+        uses: ./
+        with:
+          path: ${{ steps.fixture.outputs.path }}
+      - name: Composite Action failure propagation
+        id: broken
+        continue-on-error: true
+        uses: ./
+        with:
+          path: tests/fixtures/missing_resource
+      - name: Assert broken fixture failed
+        if: steps.broken.outcome != 'failure'
+        shell: python
+        run: raise SystemExit("The broken project unexpectedly passed")

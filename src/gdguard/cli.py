@@ -63,7 +63,13 @@ def _dispatch(args: argparse.Namespace) -> int:
 
 def _run_check(args: argparse.Namespace) -> int:
     target = Path(args.path)
-    report = scan_project(target, godot_path=args.godot)
+    report = scan_project(
+        target,
+        godot_path=args.godot,
+        import_project=args.import_project,
+        headless=args.headless,
+        dotnet_build=args.dotnet_build,
+    )
     if args.format == "json":
         sys.stdout.write(render_json(report))
     else:
@@ -100,6 +106,28 @@ def _build_parser() -> argparse.ArgumentParser:
         "--godot",
         default=None,
         help="Optional path or executable name for the Godot binary.",
+    )
+    check.add_argument(
+        "--import",
+        dest="import_project",
+        action="store_true",
+        help="Run Godot editor import (may execute code and write caches).",
+    )
+    check.add_argument(
+        "--headless",
+        action="store_true",
+        help="Run main-scene smoke test for one iteration; not a sandbox.",
+    )
+    check.add_argument(
+        "--dotnet-build",
+        action="store_true",
+        help="Run dotnet build (may execute tasks and restore over network).",
+    )
+    check.add_argument(
+        "--verbose",
+        action="store_true",
+        default=argparse.SUPPRESS,
+        help="Show Python traceback on unexpected failures.",
     )
     return parser
 

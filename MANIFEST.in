@@ -1,0 +1,4 @@
+include action.yml CHANGELOG.md CONTRIBUTING.md
+recursive-include scripts *.py
+recursive-include docs *.md
+recursive-include tests *.py *.godot *.gd *.tscn *.png

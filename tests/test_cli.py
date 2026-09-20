@@ -3,6 +3,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from gdguard import __version__
 from gdguard.cli import main
 from tests.conftest import MISSING_RESOURCE, VALID_PROJECT
 
@@ -23,7 +24,7 @@ def test_help_and_version(capsys) -> None:
     assert "gdguard" in help_out
     assert "check" in help_out
     assert _run(["--version"]) == 0
-    assert "0.1.0" in capsys.readouterr().out
+    assert __version__ in capsys.readouterr().out
 
 
 def test_valid_project_passes_without_godot(capsys, no_godot) -> None:
@@ -32,7 +33,7 @@ def test_valid_project_passes_without_godot(capsys, no_godot) -> None:
     assert code == 0
     assert "Result: PASS" in output
     assert "my-game" in output
-    assert "Godot executable not found" in output
+    assert "Not requested" in output
 
 
 def test_missing_resource_project_fails(capsys, no_godot) -> None:

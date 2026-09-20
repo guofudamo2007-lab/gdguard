@@ -22,9 +22,9 @@ def test_discover_godot_returns_none_when_missing() -> None:
         assert discover_godot() is None
 
 
-def test_headless_check_is_skipped_without_godot(tmp_path: Path) -> None:
+def test_requested_headless_check_fails_without_godot(tmp_path: Path) -> None:
     result = run_headless_check(tmp_path, None)
-    assert result.status is Status.SKIPPED
+    assert result.status is Status.FAIL
     assert "Godot executable not found" in result.message
 
 

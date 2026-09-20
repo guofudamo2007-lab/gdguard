@@ -1,48 +1,30 @@
 # Contributing
 
-GDGuard is a small Python CLI. Keep changes deterministic, local, and low-false-positive.
+Use Python 3.11+ in a virtual environment:
 
-## Setup
-
-Python 3.11+ is required.
-
-```bash
+```sh
 python -m pip install -e ".[dev]"
+python -m ruff check .
+python -m ruff format --check .
+python -m pytest -m "not godot"
+python scripts/demo.py
+python -m build
+python scripts/verify_distribution.py
 ```
 
-## Tests
+Add a minimal failing regression before fixing a bug. Keep runtime dependencies small
+and static scans independent of paid services and engine execution. Use only
+self-authored or clearly licensed fixtures. Tests must preserve the original fixtures.
 
-```bash
-pytest
-```
+Command simulations test dispatch/error handling; they do not establish Godot integration.
+For real engine testing, explicitly set GDGUARD_TEST_GODOT to a trusted binary, then
+run `python -m pytest -m godot -v`. Only the temporary copy of our fixture is executed.
+Without that variable the engine test is SKIPPED. Do not enable it for untrusted projects.
+Record the actual engine version and platform with results.
 
-Static checks must pass without a Godot binary. Do not add tests that require a local Godot install unless they are mocked or clearly optional.
+For a bug report include GDGuard/OS/Godot versions, exact command, sanitized output,
+expected result and a tiny reproduction. Never attach secrets, API keys, private
+story/character content, or a full private game. Reduce a confirmed bug into a regression
+test; keep real external reports separate from self-authored demonstrations.
 
-## Lint
-
-```bash
-ruff check .
-```
-
-Optional format:
-
-```bash
-ruff format .
-```
-
-## Project layout
-
-- `src/gdguard/` CLI, models, scanner, reporters
-- `src/gdguard/checks/` individual checks
-- `tests/fixtures/` tiny Godot projects used by tests
-
-Checkers return structured `CheckResult` values. They should not print.
-
-## Pull requests
-
-1. Open an issue if the change is large.
-2. Keep the diff focused.
-3. Add or update tests for behavior changes.
-4. Fill in the pull request template.
-
-Do not add telemetry, network calls, or required API keys.
+See [development rationale](docs/DEVELOPMENT.md) and [release checklist](docs/RELEASE.md).

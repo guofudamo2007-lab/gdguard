@@ -7,9 +7,7 @@ from gdguard.scanner import scan_project
 from tests.conftest import VALID_PROJECT
 
 
-def test_scan_records_csharp_and_skips_dotnet_when_missing(
-    tmp_path: Path, monkeypatch
-) -> None:
+def test_scan_records_csharp_and_skips_dotnet_when_missing(tmp_path: Path, monkeypatch) -> None:
     (tmp_path / "project.godot").write_text(
         'config_version=5\n[application]\nconfig/name="cs-game"\n',
         encoding="utf-8",
@@ -22,7 +20,7 @@ def test_scan_records_csharp_and_skips_dotnet_when_missing(
     assert report.project.csharp_detected is True
     dotnet = next(check for check in report.checks if check.name == "dotnet build")
     assert dotnet.status is Status.SKIPPED
-    assert "dotnet executable not found" in dotnet.message
+    assert "Not requested" in dotnet.message
 
 
 def test_valid_fixture_has_no_errors_without_godot(no_godot) -> None:

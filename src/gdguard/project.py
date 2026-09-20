@@ -4,7 +4,7 @@ import re
 from pathlib import Path
 
 from gdguard.errors import GDGuardError
-from gdguard.fs import iter_files
+from gdguard.fs import iter_files, validate_local_file
 from gdguard.models import ProjectInfo
 
 PROJECT_FILE = "project.godot"
@@ -29,8 +29,9 @@ def resolve_project_root(path: Path) -> Path:
 def load_project_info(root: Path) -> ProjectInfo:
     project_file = root / PROJECT_FILE
     try:
-        text = project_file.read_text(encoding="utf-8")
-    except OSError:
+        validate_local_file(root, project_file)
+        text = project_file.read_text(encoding="utf-8-sig")
+    except (OSError, UnicodeError):
         return ProjectInfo(
             root=root,
             name=root.name,
@@ -59,7 +60,7 @@ def load_project_info(root: Path) -> ProjectInfo:
 def _looks_damaged(text: str) -> bool:
     if not text.strip():
         return True
-    if "config_version" not in text:
+    if not _CONFIG_VERSION_RE.search(text) or "\x00" in text:
         return True
     if "[" not in text:
         return True

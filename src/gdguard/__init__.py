@@ -1,6 +1,6 @@
 """GDGuard: Godot-native project validation and CI checks."""
 
-__version__ = "0.1.0"
+__version__ = "0.2.0rc1"
 
 from gdguard.models import CheckResult, ScanReport, Status
 

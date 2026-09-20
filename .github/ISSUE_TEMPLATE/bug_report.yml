@@ -6,7 +6,7 @@ body:
     id: gdguard_version
     attributes:
       label: GDGuard version
-      placeholder: "0.1.0"
+      placeholder: "0.2.0rc1"
     validations:
       required: true
   - type: input
@@ -39,13 +39,14 @@ body:
   - type: textarea
     id: actual
     attributes:
-      label: Actual behavior
+      label: Actual behavior and sanitized text/JSON output
+      description: Remove API keys, secrets, private paths and private game content.
     validations:
       required: true
   - type: textarea
     id: repro
     attributes:
       label: Minimal reproduction
-      description: A tiny Godot project or exact files needed to reproduce the issue.
+      description: A tiny self-authored or licensed reproduction. Do not attach private game assets or secrets.
     validations:
       required: true

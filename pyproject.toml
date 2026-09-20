@@ -1,13 +1,14 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=77", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "gdguard"
-version = "0.1.0"
-description = "Godot-native project validation, CI checks, and intelligent PR review for healthier repositories."
+version = "0.2.0rc1"
+description = "Local static resource checks and opt-in runtime checks for Godot projects."
 readme = "README.md"
-license = { file = "LICENSE" }
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 authors = [
     { name = "二等分的悟" },
@@ -17,7 +18,6 @@ classifiers = [
     "Development Status :: 3 - Alpha",
     "Environment :: Console",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -30,6 +30,7 @@ dependencies = []
 dev = [
     "pytest>=8.0",
     "ruff>=0.6",
+    "build>=1.2",
 ]
 
 [project.scripts]
@@ -46,6 +47,7 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+markers = ["godot: opt-in real Godot integration on trusted fixtures"]
 
 [tool.ruff]
 line-length = 100

@@ -31,7 +31,7 @@ def check_sensitive_files(project_root: Path) -> CheckResult:
         return CheckResult(
             name=name,
             status=Status.WARNING,
-            message="WARNING\nPotential sensitive file committed:",
+            message="WARNING\nPotential sensitive file in project (Git tracking not checked):",
             details=hits,
             severity=Severity.WARNING,
         )
@@ -49,8 +49,6 @@ def _looks_secret_name(path: Path) -> bool:
 
 
 def _contains_private_key(path: Path) -> bool:
-    try:
-        sample = path.read_bytes()[:4096]
-    except OSError:
-        return False
+    with path.open("rb") as stream:
+        sample = stream.read(4096)
     return any(marker in sample for marker in _PRIVATE_KEY_MARKERS)

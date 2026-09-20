@@ -32,11 +32,12 @@ def test_missing_script_reference_is_reported() -> None:
     assert "res://scripts/missing.gd" in joined
 
 
-def test_uncertain_dynamic_paths_are_not_reported(tmp_path: Path) -> None:
+def test_dollar_path_is_a_literal_reference(tmp_path: Path) -> None:
     (tmp_path / "project.godot").write_text("config_version=5\n[application]\n", encoding="utf-8")
     (tmp_path / "scene.tscn").write_text(
-        '[ext_resource path="res://$theme/icon.png" id="1"]\n',
+        '[gd_scene format=3]\n[ext_resource path="res://$theme/icon.png" id="1"]\n',
         encoding="utf-8",
     )
     results = check_resource_references(tmp_path)
-    assert all(result.status is Status.PASS for result in results)
+    assert _by_name(results, "scene resources").status is Status.FAIL
+    assert "res://$theme/icon.png" in str(results)

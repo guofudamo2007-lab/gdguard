@@ -82,6 +82,15 @@ class ScanReport:
     git: GitInfo | None
     godot_executable: str | None
     checks: list[CheckResult] = field(default_factory=list)
+    dynamic_requested: list[str] = field(default_factory=list)
+
+    @property
+    def scope(self) -> dict[str, Any]:
+        return {
+            "mode": "static+dynamic" if self.dynamic_requested else "static",
+            "dynamic_requested": self.dynamic_requested,
+            "result_meaning": "executed checks only; not full game validation",
+        }
 
     @property
     def summary(self) -> dict[str, int]:
@@ -115,6 +124,7 @@ class ScanReport:
             "git": self.git.to_dict() if self.git else None,
             "godot_executable": self.godot_executable,
             "summary": self.summary,
+            "scope": self.scope,
             "result": self.result,
             "checks": [check.to_dict() for check in self.checks],
         }

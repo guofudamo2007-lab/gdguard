@@ -30,17 +30,15 @@ def render_text(report: ScanReport) -> str:
     for check in report.checks:
         mark = _STATUS_MARK[check.status]
         lines.append(f"{mark} {check.name}")
-        if check.status is not Status.PASS:
-            for detail_line in _message_lines(check):
-                lines.append(f"  {detail_line}")
-        elif check.details:
-            for detail in check.details:
-                lines.append(f"  {detail}")
+        for detail_line in _message_lines(check):
+            lines.append(f"  {detail_line}")
     lines.extend(
         [
             "",
             f"Warnings: {report.warning_count}",
             f"Errors: {report.error_count}",
+            f"Skipped: {report.summary['skipped']}",
+            f"Scope: {report.scope['mode']}; {report.scope['result_meaning']}",
             "",
             f"Result: {report.result}",
         ]
